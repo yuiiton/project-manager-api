@@ -6,17 +6,12 @@ from core.exceptions.commom_exceptions import ItemNotFoundError, BusinessRuleErr
 from core.exceptions.handlers import item_not_found_handler, business_rule_error_handler, value_error_handler
 
 app = FastAPI(
-    title="API gerenciadora de projetos",
+    title="Project Manager API",
+    description="""
+    API REST para gerenciamento de projetos,
+    desenvolvida com FastAPI e SQLModel.
+    """,
     lifespan=lifespan
-)
-
-# Allow cross-origin requests from the frontend during development.
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:5173/", "http://localhost:5173"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
 )
 
 
