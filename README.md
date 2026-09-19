@@ -6,7 +6,7 @@ O projeto é desenvolvido de forma incremental, adotando práticas e ferramentas
 
 ---
 
-## ✨ Objetivos
+## Objetivos
 
 * Implementar uma API REST utilizando FastAPI.
 * Aplicar uma arquitetura em camadas com separação de responsabilidades.
@@ -15,7 +15,7 @@ O projeto é desenvolvido de forma incremental, adotando práticas e ferramentas
 
 ---
 
-## 🚀 Funcionalidades
+## Funcionalidades
 
 Atualmente, a API oferece:
 
@@ -30,7 +30,7 @@ Atualmente, a API oferece:
 
 ---
 
-## 📌 Endpoints
+## Endpoints
 
 | Método   | Endpoint         | Descrição                   |
 | -------- | ---------------- | --------------------------- |
@@ -44,7 +44,7 @@ A documentação interativa é gerada automaticamente pelo FastAPI através do S
 
 ---
 
-## 🏗️ Arquitetura
+## Arquitetura
 
 A aplicação segue uma arquitetura em camadas, onde cada parte possui uma responsabilidade bem definida.
 
@@ -102,7 +102,7 @@ Cada projeto possui os seguintes atributos:
 * FastAPI
 * SQLModel
 * Pydantic
-* SQLite
+* PostgreSQL
 * Uvicorn
 * Docker
 * Docker Compose
@@ -115,7 +115,6 @@ Cada projeto possui os seguintes atributos:
 project-manager-api/
 ├── controller/         # Endpoints da aplicação
 ├── core/               # Configurações, exceções e utilitários
-├── data/               # Banco SQLite
 ├── models/             # Modelos SQLModel
 ├── repository/         # Acesso aos dados
 ├── schemas/            # Schemas de entrada e saída
@@ -158,10 +157,9 @@ O desenvolvimento da aplicação continuará incorporando melhorias de arquitetu
 ### Planejado
 
 * [x] CRUD de projetos
-* [x] Persistência com SQLite
+* [x] Persistência com PostgreSQL
 * [x] Docker
 * [x] Docker Compose
-* [ ] Suporte ao PostgreSQL
 * [ ] Migrações com Alembic
 * [ ] Testes automatizados com Pytest
 

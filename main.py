@@ -1,9 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from core.database import lifespan
 from controller.controller_project import project_router
 from core.exceptions.commom_exceptions import ItemNotFoundError, BusinessRuleError, InvalidValueError
 from core.exceptions.handlers import item_not_found_handler, business_rule_error_handler, value_error_handler
+from core.database import create_tables
+
+create_tables() #provisório
 
 app = FastAPI(
     title="Project Manager API",
@@ -11,7 +13,6 @@ app = FastAPI(
     API REST para gerenciamento de projetos,
     desenvolvida com FastAPI e SQLModel.
     """,
-    lifespan=lifespan
 )
 
 
