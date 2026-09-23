@@ -26,7 +26,7 @@ Atualmente, a API oferece:
 * Exclusão de projetos
 * Validação de dados de entrada
 * Tratamento de erros com respostas padronizadas
-* Persistência em banco de dados SQLite
+* Persistência em banco de dados
 
 ---
 
