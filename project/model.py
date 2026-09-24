@@ -1,7 +1,7 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional
 from datetime import datetime, timezone
-from schemas.schemas_project import ProjectStatus, ProjectPriority
+from project.schema import ProjectStatus, ProjectPriority
 
 class Project(SQLModel, table=True):
     """Modelo de Projeto armazenado no banco de dados."""
