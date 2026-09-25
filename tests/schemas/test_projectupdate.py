@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime, timezone, timedelta
-from schemas.schemas_project import ProjectUpdate, ProjectPriority, ProjectStatus
+from project.schema import ProjectUpdate, ProjectPriority, ProjectStatus
 
 def test_project_update_valido():
     project = ProjectUpdate(

@@ -1,5 +1,5 @@
 import pytest
-from schemas.schemas_project import ProjectCreate, ProjectPriority
+from project.schema import ProjectCreate, ProjectPriority
 
 def test_project_valido():
     project = ProjectCreate(
