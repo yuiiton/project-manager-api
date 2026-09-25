@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, status, HTTPException
-from schemas.schemas_project import ProjectResponse, ProjectCreate, ProjectUpdate
+from project.schema import ProjectResponse, ProjectCreate, ProjectUpdate
 from core.database import get_session
 from sqlmodel import Session
-from services.service_project import get_project_by_id_service, get_all_projects_service, create_project_service, update_project_service, delete_project_service
+from project.service import get_project_by_id_service, get_all_projects_service, create_project_service, update_project_service, delete_project_service
 
 project_router = APIRouter(prefix="/projects", tags=["Projects"])
 

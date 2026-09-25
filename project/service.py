@@ -1,8 +1,8 @@
-from repository.repository_projects import get_project_by_id_repository, get_all_projects, create_project, update_project, get_project_by_name, delete_project
+from project.repository import get_project_by_id_repository, get_all_projects, create_project, update_project, get_project_by_name, delete_project
 from core.exceptions.commom_exceptions import ItemNotFoundError, BusinessRuleError
-from models.models_projects import Project
+from project.model import Project
 from sqlmodel import Session
-from schemas.schemas_project import ProjectCreate, ProjectUpdate
+from project.schema import ProjectCreate, ProjectUpdate
 
 
 def get_project_by_id_service(session: Session, project_id: int) -> Project:

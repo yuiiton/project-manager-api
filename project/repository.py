@@ -1,6 +1,6 @@
-from schemas.schemas_project import ProjectCreate, ProjectUpdate
+from project.schema import ProjectCreate, ProjectUpdate
 from sqlmodel import select, Session
-from models.models_projects import Project
+from project.model import Project
 
 
 def get_project_by_id_repository(session: Session, project_id: int) -> Project | None:
