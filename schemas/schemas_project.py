@@ -30,7 +30,7 @@ class ProjectCreate(BaseModel):
         """Remove espaços em branco do início e fim da string e valida se não está vazia."""
         v = v.strip()
         if not v:
-            raise InvalidValueError("Campo não pode ser vazio ou conter apenas espaços.")
+            raise ValueError("Campo não pode ser vazio ou conter apenas espaços.")
         return v
 
 
@@ -51,7 +51,7 @@ class ProjectUpdate(BaseModel):
             return v
         v = v.strip()
         if not v:
-            raise InvalidValueError("Campo não pode ser vazio ou conter apenas espaços.")
+            raise ValueError("Campo não pode ser vazio ou conter apenas espaços.")
         return v
 
     @field_validator("completed_at")
@@ -64,14 +64,14 @@ class ProjectUpdate(BaseModel):
             return None
 
         if status is not None and status != ProjectStatus.completed:
-            raise InvalidValueError("completed_at só pode ser definido se status for 'concluido'.")
+            raise ValueError("completed_at só pode ser definido se status for 'concluido'.")
 
         if v.tzinfo is None or v.tzinfo.utcoffset(v) is None:
-            raise InvalidValueError("completed_at deve ser um datetime com timezone (UTC).")
+            raise ValueError("completed_at deve ser um datetime com timezone (UTC).")
 
         now_utc = datetime.now(tz=timezone.utc)
         if v > now_utc:
-            raise InvalidValueError("completed_at não pode ser no futuro.")
+            raise ValueError("completed_at não pode ser no futuro.")
 
         return v
 
