@@ -1,133 +1,193 @@
 # Project Manager API
 
-Uma API REST desenvolvida com **FastAPI** para gerenciamento de projetos. A aplicação oferece operações de cadastro, consulta, atualização e remoção de projetos, seguindo uma arquitetura em camadas que favorece organização, manutenção e evolução do código.
-
-O projeto é desenvolvido de forma incremental, adotando práticas e ferramentas amplamente utilizadas no desenvolvimento de APIs modernas em Python.
+API REST desenvolvida em Python com FastAPI para gerenciamento de projetos. A aplicação oferece CRUD completo de projetos com validações, status e prioridade, além de tratamento padronizado de erros.
 
 ---
 
-## Objetivos
+## Visão geral
 
-* Implementar uma API REST utilizando FastAPI.
-* Aplicar uma arquitetura em camadas com separação de responsabilidades.
-* Manter uma base de código organizada, legível e de fácil manutenção.
-* Evoluir continuamente a aplicação com ferramentas e práticas comuns em projetos reais.
+A estrutura atual do projeto foi organizada para seguir uma visão em camadas mais próxima do domínio da aplicação:
+
+- `main.py`: inicialização da aplicação FastAPI e registro dos routers.
+- `project/`: módulo principal do domínio de projetos.
+- `core/`: configuração, banco de dados, utilitários e tratamento de exceções.
+- `tests/`: validações de schema e regras de negócio.
 
 ---
 
-## Funcionalidades
+## Estrutura atual
 
-Atualmente, a API oferece:
+```text
+project-manager-api/
+├── main.py
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+├── .env.example
+├── core/
+│   ├── __init__.py
+│   ├── config.py
+│   ├── database.py
+│   └── exceptions/
+│       ├── __init__.py
+│       ├── commom_exceptions.py
+│       └── handlers.py
+├── project/
+│   ├── __init__.py
+│   ├── controller.py
+│   ├── model.py
+│   ├── repository.py
+│   ├── schema.py
+│   └── service.py
+├── tests/
+│   ├── conftest.py
+│   └── schemas/
+│       ├── test_projectcreate.py
+│       └── test_projectupdate.py
+└── README.md
+```
 
-* Cadastro de projetos
-* Listagem de projetos
-* Consulta de um projeto por ID
-* Atualização de projetos
-* Exclusão de projetos
-* Validação de dados de entrada
-* Tratamento de erros com respostas padronizadas
-* Persistência em banco de dados
+### Organização por módulo
+
+#### `project/`
+
+Contém a lógica do domínio de projetos:
+
+- `controller.py`: endpoints da API
+- `service.py`: regras de negócio
+- `repository.py`: acesso ao banco
+- `model.py`: modelo SQLModel
+- `schema.py`: validações e contratos de entrada/saída
+
+#### `core/`
+
+Responsável por infraestrutura e comportamento global da aplicação:
+
+- `config.py`: leitura das variáveis de ambiente
+- `database.py`: conexão e sessão do banco
+- `exceptions/`: classes e handlers de erro da API
+
+---
+
+## Configuração
+
+A aplicação lê a URL do banco a partir do arquivo `.env` usando `pydantic-settings`.
+
+Exemplo de `.env`:
+
+```env
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/project_manager
+```
+
+> O projeto usa SQLModel e cria as tabelas automaticamente ao iniciar a aplicação via `create_tables()` em `main.py`.
 
 ---
 
 ## Endpoints
 
-| Método   | Endpoint         | Descrição                   |
-| -------- | ---------------- | --------------------------- |
-| `POST`   | `/projects`      | Cria um novo projeto        |
-| `GET`    | `/projects`      | Lista todos os projetos     |
-| `GET`    | `/projects/{id}` | Obtém um projeto específico |
-| `PUT`    | `/projects/{id}` | Atualiza um projeto         |
-| `DELETE` | `/projects/{id}` | Remove um projeto           |
+### Projetos
 
-A documentação interativa é gerada automaticamente pelo FastAPI através do Swagger UI e ReDoc.
+| Método    | Endpoint                   | Descrição                      |
+| ---------- | -------------------------- | -------------------------------- |
+| `GET`    | `/projects/`             | Lista todos os projetos          |
+| `GET`    | `/projects/{project_id}` | Busca um projeto pelo ID         |
+| `POST`   | `/projects/`             | Cria um novo projeto             |
+| `PATCH`  | `/projects/{project_id}` | Atualiza parcialmente um projeto |
+| `DELETE` | `/projects/{project_id}` | Remove um projeto                |
+
+A documentação interativa está disponível em:
+
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
 
 ---
 
-## Arquitetura
+## Modelos e regras
 
-A aplicação segue uma arquitetura em camadas, onde cada parte possui uma responsabilidade bem definida.
+### `ProjectStatus`
 
-```text
-Controller
-    │
-    ▼
-Service
-    │
-    ▼
-Repository
-    │
-    ▼
-Database
+Valores aceitos:
+
+- `pendente`
+- `em_progresso`
+- `concluido`
+- `cancelado`
+
+### `ProjectPriority`
+
+Valores aceitos:
+
+- `1` = alta
+- `2` = média
+- `3` = baixa
+
+### Campos do projeto
+
+| Campo            | Tipo                | Descrição            |
+| ---------------- | ------------------- | ---------------------- |
+| `id`           | `int`             | Identificador único   |
+| `name`         | `str`             | Nome do projeto        |
+| `description`  | `str`             | Descrição do projeto |
+| `status`       | `ProjectStatus`   | Situação atual       |
+| `priority`     | `ProjectPriority` | Prioridade             |
+| `created_at`   | `datetime`        | Data de criação      |
+| `completed_at` | `datetime           | null`                  |
+
+### Validações relevantes
+
+- `name` e `description` não podem ficar vazios ou com espaços em branco.
+- Não é permitido cadastrar dois projetos com o mesmo nome.
+- `completed_at` só pode ser informado quando `status` for `concluido`.
+- `completed_at` deve possuir timezone UTC e não pode estar no futuro.
+
+---
+
+## Exemplos de payload
+
+### Criar projeto
+
+```json
+{
+  "name": "Projeto Alpha",
+  "description": "Desenvolvimento do novo portal interno",
+  "priority": 1
+}
 ```
 
-### Controller
+### Atualizar projeto
 
-Responsável por expor os endpoints da API, receber as requisições HTTP e encaminhá-las para a camada de serviço.
-
-### Service
-
-Implementa as regras de negócio da aplicação, realiza validações e coordena o fluxo das operações.
-
-### Repository
-
-Centraliza o acesso aos dados, realizando operações de leitura, escrita, atualização e remoção no banco de dados.
-
-### Models e Schemas
-
-* **Models** representam as entidades persistidas utilizando SQLModel.
-* **Schemas** definem os contratos de entrada e saída da API através do Pydantic.
-
----
-
-## 🗄️ Modelo de dados
-
-Cada projeto possui os seguintes atributos:
-
-| Campo          | Descrição           |
-| -------------- | ------------------- |
-| `id`           | Identificador único |
-| `name`         | Nome do projeto     |
-| `description`  | Descrição           |
-| `status`       | Status do projeto   |
-| `priority`     | Prioridade          |
-| `created_at`   | Data de criação     |
-| `completed_at` | Data de conclusão   |
-
----
-
-## 🛠️ Tecnologias
-
-* Python 3.11
-* FastAPI
-* SQLModel
-* Pydantic
-* PostgreSQL
-* Uvicorn
-* Docker
-* Docker Compose
-
----
-
-## 📁 Estrutura do projeto
-
-```text
-project-manager-api/
-├── controller/         # Endpoints da aplicação
-├── core/               # Configurações, exceções e utilitários
-├── models/             # Modelos SQLModel
-├── repository/         # Acesso aos dados
-├── schemas/            # Schemas de entrada e saída
-├── services/           # Regras de negócio
-├── main.py             # Inicialização da aplicação
-├── Dockerfile
-├── docker-compose.yml
-└── requirements.txt
+```json
+{
+  "status": "em_progresso",
+  "priority": 2,
+  "description": "Planejamento revisado"
+}
 ```
 
 ---
 
-## ▶️ Executando o projeto
+## Tecnologias
+
+- Python 3.11+
+- FastAPI
+- SQLModel
+- Pydantic
+- PostgreSQL
+- Uvicorn
+- Docker
+- Docker Compose
+- Pytest
+
+---
+
+## Como executar
+
+### Localmente
+
+```bash
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
 
 ### Com Docker Compose
 
@@ -135,32 +195,14 @@ project-manager-api/
 docker compose up --build
 ```
 
-A aplicação ficará disponível em:
-
-* API: http://localhost:8000
-* Swagger UI: http://localhost:8000/docs
-* ReDoc: http://localhost:8000/redoc
-
-### Executando localmente
-
-```bash
-pip install -r requirements.txt
-uvicorn main:app --reload
-```
+A aplicação ficará disponível em:`http://localhost:8000`
 
 ---
 
-## 🧪 Próximas evoluções
+## Testes
 
-O desenvolvimento da aplicação continuará incorporando melhorias de arquitetura, infraestrutura e qualidade de código.
+Os testes de schema e validação podem ser executados com:
 
-### Planejado
-
-* [x] CRUD de projetos
-* [x] Persistência com PostgreSQL
-* [x] Docker
-* [x] Docker Compose
-* [ ] Migrações com Alembic
-* [ ] Testes automatizados com Pytest
-
-
+```bash
+pytest -q
+```
