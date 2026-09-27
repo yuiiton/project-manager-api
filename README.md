@@ -22,8 +22,11 @@ project-manager-api/
 ├── main.py
 ├── Dockerfile
 ├── docker-compose.yml
+├── alembic.ini
 ├── requirements.txt
 ├── .env.example
+├── alembic/
+│   ├── versions/
 ├── core/
 │   ├── __init__.py
 │   ├── config.py
