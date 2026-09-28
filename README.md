@@ -82,8 +82,6 @@ Exemplo de `.env`:
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/project_manager
 ```
 
-> O projeto usa SQLModel e cria as tabelas automaticamente ao iniciar a aplicação via `create_tables()` em `main.py`.
-
 ---
 
 ## Endpoints
